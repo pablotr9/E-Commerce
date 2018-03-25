@@ -65,7 +65,7 @@ public class TransactionView extends HttpServlet {
 "                <li><a href=\"#\">Contact</a></li>\n" +
 "            </ul>\n" +
 "        </nav>" +
-"    <body>\n <h1> Cart </h1> <br><br>");
+"    <body>\n <h1> Purchase </h1> <br><br>");
                     
                         
                         for(int i=0; i< (int) request.getAttribute("num_items") ; i++){

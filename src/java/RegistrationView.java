@@ -60,7 +60,7 @@ public class RegistrationView extends HttpServlet {
 "            </ul>\n" +
 "        </nav>\n" +
 "            <h1>Registration form</h1>   \n" +
-"            <form method=\"post\" action=\"RegistrationController \"> \n" +
+"            <form method=\"post\" action=\"RegistrationController\"> \n" +
 "                <div class=\"form-element\">\n" +
 "                    <label for=\"name\">Name</label>\n" +
 "                    <input type=\"text\" name=\"name\" id=\"name\" size=\"40\">\n" +
