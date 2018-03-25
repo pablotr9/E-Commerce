@@ -49,6 +49,7 @@ public class LoginView extends HttpServlet {
 "            <ul>\n" +
 "                <li><a href=\"index.html\">Home</a></li>\n" +
 "                <li><a href=\"register.html\">Register</a></li>\n" +
+"                <li><a href=\"ProductView\">View products</a></li>\n" +
 "                <li><a href=\"#\">Contact</a></li>\n" +
 "            </ul>\n" +
 "        </nav>\n" +

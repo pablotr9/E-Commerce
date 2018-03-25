@@ -44,6 +44,10 @@
         <servlet-name>PreviousPurchasesView</servlet-name>
         <servlet-class>PreviousPurchasesView</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PreviousPurchasesController</servlet-name>
+        <servlet-class>PreviousPurchasesController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegistrationController</servlet-name>
         <url-pattern>/RegistrationController</url-pattern>
@@ -83,6 +87,10 @@
     <servlet-mapping>
         <servlet-name>PreviousPurchasesView</servlet-name>
         <url-pattern>/PreviousPurchasesView</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PreviousPurchasesController</servlet-name>
+        <url-pattern>/PreviousPurchasesController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -63,13 +63,14 @@ public class ProductView extends HttpServlet {
 "                <li><a href=\"index.html\">Home</a></li>\n");
            if(logged){
                     out.println("<a href=\"LogoutController\">Logout</a>");
-                    out.println("<a href=\"PreviousPurchasesView\">History</a>");
+                    out.println("<a href=\"PreviousPurchasesController\">History</a>");
            }
            else{
                out.println("<li><a href=\"login.html\">Login</a></li>\n");
            }
            out.println(
-"                <li><a href=\"#\">Contact</a></li>\n" +
+"               \n" +
+"                <li><a href=\"ProductView\">View products</a></li> <li><a href=\"#\">Contact</a></li>\n" +
 "            </ul>\n" +
 "        </nav>" );
                 

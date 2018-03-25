@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
+import model.Purchase;
 public class Conection {
 public static boolean userExists(String arg) throws ClassNotFoundException,
 SQLException {
@@ -52,28 +53,7 @@ SQLException {
  }
 
 
-public static void addPurchase(String name, String username, String pass, String email, String gender, String tel, String country, String spam) throws ClassNotFoundException,
-SQLException {
-    String url = "jdbc:mysql://localhost:3306/jdbcex";
-    Class.forName("com.mysql.jdbc.Driver");
-    Connection con = DriverManager.getConnection(url, "jdbcuser",
-   "password");
-    Statement instr = con.createStatement();
-    if(gender.equals("male"))
-        gender="m";
-    else
-        gender="f";
-    
-    pass = getHash(pass);
-    
-    //FIX SPAM,  *************************************
-    String sql = "insert into users (name, username, password,tel,email,gender,country,spam) values ('"+name+"','"+username+"','"+pass+"',"+tel+",'"+email+"','"+gender+"','"+country+"',"+1+")";
-    int rs = instr.executeUpdate(sql);
-    
 
-   instr.close();
-    con.close();
- }
 
 
 
@@ -89,7 +69,7 @@ SQLException {
     Statement instr = con.createStatement();
     
     
-    // GET PRODUCT ID
+    // GET user ID
     String idUser="0";
     String idUserSQL = "select * from users where username='"+username+"'";
     ResultSet idusername = instr.executeQuery(idUserSQL);
@@ -135,7 +115,53 @@ SQLException {
  }
 
 
+public static ArrayList<Purchase> getPurchaseHistory(String username) throws ClassNotFoundException,
+SQLException {
+        String url = "jdbc:mysql://localhost:3306/jdbcex";
+    Class.forName("com.mysql.jdbc.Driver");
+    Connection con = DriverManager.getConnection(url, "jdbcuser",
+   "password");
+    Statement instr = con.createStatement();
+    Statement instr2 = con.createStatement();
+    Statement instr3 = con.createStatement();
+    Statement getIdUser = con.createStatement();
+    
+    
+    // GET user ID
+    String idUser="0";
+    String idUserSQL = "select * from users where username='"+username+"'";
+    ResultSet idusername = instr.executeQuery(idUserSQL);
+    if(idusername.next()){
+        idUser = idusername.getString("id");
+    }
+    
+    ArrayList<Purchase> res = new ArrayList();
+    
+    
+    
+    String sql = "select id_purchase,purchaseDate from purchase where id_person='"+idUser+"'";
+    ResultSet rs = instr.executeQuery(sql);
+    
+    while(rs.next()){
+        sql = "select product_id,quantity from orders where order_id='"+rs.getString(1)+"'";
+        ResultSet rs2 = instr2.executeQuery(sql);
+        
+        while(rs2.next()){
+            String getProductNamePrice = "select name,unitPrice from products where id='"+rs2.getString(1)+"'";
+            ResultSet rsTmp = instr3.executeQuery(getProductNamePrice);
+            while(rsTmp.next()){
+                res.add(new Purchase(rsTmp.getString(1), rs.getString(2), rs2.getString(2), rsTmp.getString(2)));
+            }
+        }
+    }
+    
+    
 
+    rs.close();
+   instr.close();
+    con.close();
+    return res;
+}
 
 
 

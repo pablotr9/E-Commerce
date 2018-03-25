@@ -6,18 +6,21 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.Integer.parseInt;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Purchase;
 
 /**
  *
  * @author Pablo
  */
-public class TransactionView extends HttpServlet {
+public class PreviousPurchasesController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,51 +34,40 @@ public class TransactionView extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-                 boolean logged=false;
-                    if(request.getSession(false) != null && request.getSession().getAttribute("USER")!=null){
-                        logged=true;
-                    }
-                    /* TODO output your page here. You may use following sample code. */
-                   out.println("<html>\n" +
-"     <head>\n" +
-"        <link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\"/>\n" +
-"        <title>Registration</title>\n" +
-"        <meta charset=\"UTF-8\">\n" +
-"        <meta name=\"viewport\" content=\"width=device-width\">\n" +
-"    </head>\n" +
-"    <body>\n" +
-"        <div id=\"content\">\n" +
-"        <div class=\"header\">\n" +
-"            <img src=\"./img/companyLogo.jpg\" width=\"100px\"  />\n" +
-"            <span class=\"header-text\">COMPANY NAME</span>\n" +
-"        </div>\n" +
-"        <nav>\n" +
-"            <ul>\n" +
-"                <li><a href=\"index.html\">Home</a></li>\n");
-           if(logged){
-                    out.println("<a href=\"LogoutController\">Logout</a>");
-                    out.println("<a href=\"PreviousPurchasesController\">History</a>");
-                    out.println("<a href=\"ProductView\">View products</a>");
-           }
-           else{
-               out.println("<li><a href=\"login.html\">Login</a></li>\n");
-           }
-           out.println(
-"                <li><a href=\"#\">Contact</a></li>\n" +
-"            </ul>\n" +
-"        </nav>" +
-"    <body>\n <h1> Cart </h1> <br><br>");
-                    
-                        
-                        for(int i=0; i< (int) request.getAttribute("num_items") ; i++){
-                            out.println("<br>Name " + ((ArrayList<String>) request.getAttribute("namepro")).get(i) + "<br>Price " + ((ArrayList<String>) request.getAttribute("pricepro")).get(i) + "<br>Quantity " + ((ArrayList<String>) request.getAttribute("qttypro")).get(i) +"<br><br>");
-                            
-                        }
-                   out.println( "<br><br>Total price: " + request.getAttribute("sum") +
-"  <br>   </body>\n" +
-"</html>");
-    }
+       
+         boolean logged=false;
+                if(request.getSession(false) != null && request.getSession().getAttribute("USER")!=null){
+                    logged=true;
+                }
+                
+                
+                
+                
+        if(logged){
+            
+            ArrayList<Purchase> history = new ArrayList();
+            try {
+                history = Conection.getPurchaseHistory(request.getSession().getAttribute("USER").toString());
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(PreviousPurchasesController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(PreviousPurchasesController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+                request.setAttribute("history", history);
+                request.getRequestDispatcher("PreviousPurchasesView").forward(request, response);
+                
+            
+        }else{
+            ArrayList<String> Error = new ArrayList();
+            Error.add("You have to be logged in!");
+            request.setAttribute("errors", Error);
+            request.getRequestDispatcher("LoginView").forward(request, response);
+        }
+        
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

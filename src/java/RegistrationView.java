@@ -55,6 +55,7 @@ public class RegistrationView extends HttpServlet {
 "            <ul>\n" +
 "                <li><a href=\"index.html\">Home</a></li>\n" +
 "                <li><a href=\"login.html\">Login</a></li>\n" +
+"                <li><a href=\"ProductView\">View products</a></li>\n" +
 "                <li><a href=\"#\">Contact</a></li>\n" +
 "            </ul>\n" +
 "        </nav>\n" +

@@ -6,18 +6,20 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Product;
+import model.Purchase;
 
 /**
  *
  * @author Pablo
  */
-public class TransactionView extends HttpServlet {
+public class PreviousPurchasesView extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,15 +34,18 @@ public class TransactionView extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-                 boolean logged=false;
-                    if(request.getSession(false) != null && request.getSession().getAttribute("USER")!=null){
-                        logged=true;
-                    }
-                    /* TODO output your page here. You may use following sample code. */
-                   out.println("<html>\n" +
-"     <head>\n" +
+            /* TODO output your page here. You may use following sample code. */
+             boolean logged=false;
+                if(request.getSession(false) != null && request.getSession().getAttribute("USER")!=null){
+                    logged=true;
+                }
+                
+            
+           out.println("<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "  <head>\n" +
 "        <link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\"/>\n" +
-"        <title>Registration</title>\n" +
+"        <title>Product View</title>\n" +
 "        <meta charset=\"UTF-8\">\n" +
 "        <meta name=\"viewport\" content=\"width=device-width\">\n" +
 "    </head>\n" +
@@ -55,7 +60,6 @@ public class TransactionView extends HttpServlet {
 "                <li><a href=\"index.html\">Home</a></li>\n");
            if(logged){
                     out.println("<a href=\"LogoutController\">Logout</a>");
-                    out.println("<a href=\"PreviousPurchasesController\">History</a>");
                     out.println("<a href=\"ProductView\">View products</a>");
            }
            else{
@@ -64,18 +68,38 @@ public class TransactionView extends HttpServlet {
            out.println(
 "                <li><a href=\"#\">Contact</a></li>\n" +
 "            </ul>\n" +
-"        </nav>" +
-"    <body>\n <h1> Cart </h1> <br><br>");
-                    
-                        
-                        for(int i=0; i< (int) request.getAttribute("num_items") ; i++){
-                            out.println("<br>Name " + ((ArrayList<String>) request.getAttribute("namepro")).get(i) + "<br>Price " + ((ArrayList<String>) request.getAttribute("pricepro")).get(i) + "<br>Quantity " + ((ArrayList<String>) request.getAttribute("qttypro")).get(i) +"<br><br>");
-                            
-                        }
-                   out.println( "<br><br>Total price: " + request.getAttribute("sum") +
-"  <br>   </body>\n" +
-"</html>");
-    }
+"        </nav>" );
+                
+                
+                
+               ArrayList<Purchase> history = (ArrayList<Purchase>) request.getAttribute("history");
+               String date = "";
+               double total=-1;
+               
+               for(Purchase p : history){
+                   if(!date.equals(p.date)){
+                       if(total != -1){
+                           out.println("Total: "+p.getTotal());
+                           total=0;
+                       }
+                       if(total==-1){
+                           total=0;
+                       }
+                       date = p.date;
+                       out.println("<br><br> <h1> Purchase with date: "+p.date+"</h1><br>");
+                       out.println("Name: "+p.productName+" Price: "+p.price+" "+p.quantity);
+                       total+=p.getTotal();
+                   }else{
+                       out.println("Name: "+p.productName+" Price: "+p.price+" "+p.quantity+"<br>");
+                       total+=p.getTotal();
+                   }
+               }
+               
+                
+                 out.println(
+                " </body>\n" +
+                "</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
