@@ -8,18 +8,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Product;
 
 /**
  *
  * @author Pablo
  */
-public class BuyController extends HttpServlet {
+public class TransactionView extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,49 +31,40 @@ public class BuyController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-       
-        int max = parseInt( (String) request.getParameter("max"));
-        
-        
-            try (PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
                 
                     /* TODO output your page here. You may use following sample code. */
-               
-                   double sum = 0;
-                   int num_items=0;
-                   ArrayList<String> nameProducts = new ArrayList();
-                   ArrayList<String> qttyProducts = new ArrayList();
-                   ArrayList<String> priceProducts = new ArrayList();
-                   //List<Product> products=(List<Product>) getServletContext().getAttribute("PRODUCTS");
-
-                   for(int i=0; i<max;i++){
-                       //???
-                         String quantity =  request.getParameter("productQtty"+i);
-                         int quantityInt = parseInt ( (String) quantity);
-                         String name = request.getParameter("productName"+i);
-                         String priceString = request.getParameter("productPrice"+i);
-                         double price = Double.valueOf(priceString);
-                         
-                         if(quantityInt>0){
-                             nameProducts.add(name);
-                             qttyProducts.add(quantity);
-                             priceProducts.add(priceString);
-                             
-                             sum += price * quantityInt;
-                             num_items++;
-                         }                         
-                   }
-                   
-                   request.setAttribute("namepro",nameProducts);
-                   request.setAttribute("qttypro", qttyProducts);
-                   request.setAttribute("pricepro", priceProducts);
-                   request.setAttribute("sum", sum);
-                   request.setAttribute("num_items", num_items);
-                   request.getRequestDispatcher("CartView").forward(request, response);
-
-                
-            }
-        
+                   out.println("<html>\n" +
+"     <head>\n" +
+"        <link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\"/>\n" +
+"        <title>Registration</title>\n" +
+"        <meta charset=\"UTF-8\">\n" +
+"        <meta name=\"viewport\" content=\"width=device-width\">\n" +
+"    </head>\n" +
+"    <body>\n" +
+"        <div id=\"content\">\n" +
+"        <div class=\"header\">\n" +
+"            <img src=\"./img/companyLogo.jpg\" width=\"100px\"  />\n" +
+"            <span class=\"header-text\">COMPANY NAME</span>\n" +
+"        </div>\n" +
+"        <nav>\n" +
+"            <ul>\n" +
+"                <li><a href=\"index.html\">Home</a></li>\n" +
+"                <li><a href=\"login.html\">Login</a></li>\n" +
+"                <li><a href=\"#\">Contact</a></li>\n" +
+"            </ul>\n" +
+"        </nav>" +
+"    <body>\n <h1> Cart </h1> <br><br>");
+                    
+                        
+                        for(int i=0; i< (int) request.getAttribute("num_items") ; i++){
+                            out.println("<br>Name " + ((ArrayList<String>) request.getAttribute("namepro")).get(i) + "<br>Price " + ((ArrayList<String>) request.getAttribute("pricepro")).get(i) + "<br>Quantity " + ((ArrayList<String>) request.getAttribute("qttypro")).get(i) +"<br><br>");
+                            
+                        }
+                   out.println( "<br><br>Total price: " + request.getAttribute("sum") +
+"  <br>   </body>\n" +
+"</html>");
+    }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -116,7 +105,5 @@ public class BuyController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-   
 
 }

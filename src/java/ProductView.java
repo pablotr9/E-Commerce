@@ -38,23 +38,43 @@ public class ProductView extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-           out.println("<!DOCTYPE html>\n" +
-                "<html>\n" +
-                " <head>\n" +
-                " <title>Product view</title>\n" +
-                " <meta charset=\"UTF-8\">\n" +
-                " <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n" +
-                " </head>\n " 
- +
-                " <body>\n" );
-                
-                
-                
-                boolean logged=false;
+             boolean logged=false;
                 if(request.getSession(false) != null && request.getSession().getAttribute("USER")!=null){
                     logged=true;
                 }
                 
+            
+           out.println("<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "  <head>\n" +
+"        <link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\"/>\n" +
+"        <title>Product View</title>\n" +
+"        <meta charset=\"UTF-8\">\n" +
+"        <meta name=\"viewport\" content=\"width=device-width\">\n" +
+"    </head>\n" +
+"    <body>\n" +
+"        <div id=\"content\">\n" +
+"        <div class=\"header\">\n" +
+"            <img src=\"./img/companyLogo.jpg\" width=\"100px\"  />\n" +
+"            <span class=\"header-text\">COMPANY NAME</span>\n" +
+"        </div>\n" +
+"        <nav>\n" +
+"            <ul>\n" +
+"                <li><a href=\"index.html\">Home</a></li>\n");
+           if(logged){
+                    out.println("<a href=\"LogoutController\">Logout</a>");
+           }
+           else{
+               out.println("<li><a href=\"login.html\">Login</a></li>\n");
+           }
+           out.println(
+"                <li><a href=\"#\">Contact</a></li>\n" +
+"            </ul>\n" +
+"        </nav>" );
+                
+                
+                
+               
                 
                 if(logged){
                     
@@ -68,7 +88,6 @@ public class ProductView extends HttpServlet {
                     }
                  
                     out.println("       <input type=\"submit\" value=\"Submit\">     </form>" );
-                    out.println("<a href=\"LogoutController\">Logout</a>");
                     
                     
                 }else{
