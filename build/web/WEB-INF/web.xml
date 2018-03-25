@@ -37,8 +37,12 @@
         <servlet-class>LogoutController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CartView</servlet-name>
+        <servlet-name>TransactionView</servlet-name>
         <servlet-class>TransactionView</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PreviousPurchasesView</servlet-name>
+        <servlet-class>PreviousPurchasesView</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RegistrationController</servlet-name>
@@ -73,8 +77,12 @@
         <url-pattern>/LogoutController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>CartView</servlet-name>
-        <url-pattern>/CartView</url-pattern>
+        <servlet-name>TransactionView</servlet-name>
+        <url-pattern>/TransactionView</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PreviousPurchasesView</servlet-name>
+        <url-pattern>/PreviousPurchasesView</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

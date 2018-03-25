@@ -52,29 +52,95 @@ SQLException {
  }
 
 
-// cambiar password a no string ********************************************************************************
-public static boolean isPasswordCorrect(String username, String password) throws ClassNotFoundException,
+public static void addPurchase(String name, String username, String pass, String email, String gender, String tel, String country, String spam) throws ClassNotFoundException,
 SQLException {
     String url = "jdbc:mysql://localhost:3306/jdbcex";
     Class.forName("com.mysql.jdbc.Driver");
     Connection con = DriverManager.getConnection(url, "jdbcuser",
    "password");
     Statement instr = con.createStatement();
+    if(gender.equals("male"))
+        gender="m";
+    else
+        gender="f";
     
-    password = getHash(password);
+    pass = getHash(pass);
     
-    String sql = "SELECT username FROM users WHERE username='"+username+"' AND password='"+password+"'";
-    ResultSet rs = instr.executeQuery(sql);
-    boolean res = false;
-    if(rs.next()){
-        res = true;
-    }
+    //FIX SPAM,  *************************************
+    String sql = "insert into users (name, username, password,tel,email,gender,country,spam) values ('"+name+"','"+username+"','"+pass+"',"+tel+",'"+email+"','"+gender+"','"+country+"',"+1+")";
+    int rs = instr.executeUpdate(sql);
+    
 
-    rs.close();
    instr.close();
     con.close();
-    return res;
-}
+ }
+
+
+
+
+public static void addPurchase(ArrayList<String> productName, String username, ArrayList<String> quantity, int num_items ) throws ClassNotFoundException,
+SQLException {
+    String url = "jdbc:mysql://localhost:3306/jdbcex";
+    Class.forName("com.mysql.jdbc.Driver");
+    Connection con = DriverManager.getConnection(url, "jdbcuser",
+   "password");
+    Statement getIdProduct = con.createStatement();
+    Statement getIdUser = con.createStatement();
+    Statement instr = con.createStatement();
+    
+    
+    // GET PRODUCT ID
+    String idUser="0";
+    String idUserSQL = "select * from users where username='"+username+"'";
+    ResultSet idusername = instr.executeQuery(idUserSQL);
+    if(idusername.next()){
+        idUser = idusername.getString("id");
+    }
+    
+    
+    System.out.println("busca " + idUser + " " + username);
+    
+    
+    String sql = "insert into purchase (id_person) values ('"+idUser+"')";
+    instr.executeUpdate(sql);
+    
+    for(int i=0; i<num_items; i++){
+
+        /* ArrayProducts.get(0) has an amount of ArrayQuantity.get(0) */
+        
+        // GET PRODUCT ID
+        String idProduct="";
+        String idProductSQL = "select * from products where name='"+productName.get(i)+"'";
+        ResultSet idproduct = instr.executeQuery(idProductSQL);
+        if(idproduct.next()){
+            idProduct = idproduct.getString("id");
+        }
+        
+        // GET purchase ID --- 
+        String idPurchase="";
+        String idPurchaseSQL = "select LAST_INSERT_ID() from purchase where id_person='"+idUser+"'";
+        ResultSet idPurchaseRS = instr.executeQuery(idPurchaseSQL);
+        if(idPurchaseRS.next()){
+            idPurchase = idPurchaseRS.getString(1); // 1 = first column 
+        }       
+        
+        sql = "insert into orders (order_id,product_id,quantity) values ('"+idPurchase+"','"+idProduct+"','"+quantity.get(i)+"')";
+        instr.executeUpdate(sql);
+        
+    }
+    
+
+   instr.close();
+    con.close();
+ }
+
+
+
+
+
+
+
+
 
 
 
@@ -123,6 +189,30 @@ SQLException {
     con.close();
     return res;
 }
+
+public static boolean isPasswordCorrect(String username, String password) throws ClassNotFoundException,
+SQLException {
+    String url = "jdbc:mysql://localhost:3306/jdbcex";
+    Class.forName("com.mysql.jdbc.Driver");
+    Connection con = DriverManager.getConnection(url, "jdbcuser",
+   "password");
+    Statement instr = con.createStatement();
+    
+    password = getHash(password);
+    String sql = "SELECT username FROM users WHERE username='"+username+"' AND password='"+password+"'";
+    ResultSet rs = instr.executeQuery(sql);
+    boolean res = false;
+    if(rs.next()){
+        res = true;
+    }
+        
+     rs.close();
+   instr.close();
+    con.close();
+    return res;
+}
+
+
 
 }
 

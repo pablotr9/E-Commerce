@@ -7,8 +7,12 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.Integer.parseInt;
+import static java.lang.Thread.sleep;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -65,13 +69,25 @@ public class BuyController extends HttpServlet {
                              num_items++;
                          }                         
                    }
-                   
+                   String username = "null";
+                   if(request.getSession(false) != null &&
+                    request.getSession().getAttribute("USER")!=null){
+                        username=(String) request.getSession().getAttribute("USER");
+                   }
+                    out.println(username);
+                       try {
+                           Conection.addPurchase(nameProducts, username, qttyProducts, num_items);
+                       } catch (ClassNotFoundException ex) {
+                           Logger.getLogger(BuyController.class.getName()).log(Level.SEVERE, null, ex);
+                       } catch (SQLException ex) {
+                           Logger.getLogger(BuyController.class.getName()).log(Level.SEVERE, null, ex);
+                       }
                    request.setAttribute("namepro",nameProducts);
                    request.setAttribute("qttypro", qttyProducts);
                    request.setAttribute("pricepro", priceProducts);
                    request.setAttribute("sum", sum);
                    request.setAttribute("num_items", num_items);
-                   request.getRequestDispatcher("CartView").forward(request, response);
+                   request.getRequestDispatcher("TransactionView").forward(request, response);
 
                 
             }
