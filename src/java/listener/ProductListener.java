@@ -5,6 +5,7 @@
  */
 package listener;
 
+import db.Conection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import model.Product;
+
 
 /**
  * Web application lifecycle listener.
@@ -46,7 +48,7 @@ public class ProductListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
@@ -60,27 +62,37 @@ public class ProductListener implements ServletContextListener {
     public ArrayList<Product> getProducts() throws ClassNotFoundException,
 SQLException {
         String url = "jdbc:mysql://localhost:3306/jdbcex";
-    Class.forName("com.mysql.jdbc.Driver");
+    /*Class.forName("com.mysql.jdbc.Driver");
     Connection con = DriverManager.getConnection(url, "jdbcuser",
    "password");
     Statement instr = con.createStatement();
+*/
     
-    ArrayList<Product> res = new ArrayList();
-    
-    String sql = "SELECT * FROM products";
-    ResultSet rs = instr.executeQuery(sql);
-    
+        ArrayList<Product> res = new ArrayList();
 
-    while(rs.next()){
+    String sql = "SELECT * FROM products";
+    try (Connection con = Conection.getConnection();
+        Statement instr = con.createStatement();) {
+        ResultSet rs = instr.executeQuery(sql);
+        while(rs.next()){
         res.add(new Product(rs.getString("id"), rs.getString("name"),rs.getString("description"), rs.getString("type"), Double.valueOf(rs.getString("unitPrice"))));
       
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
     }
+
+    
     
     
 
-    rs.close();
-   instr.close();
-    con.close();
+    
+    
+    
+
+    //rs.close();
+   // instr.close();
+   // con.close();
     return res;
 }
     
