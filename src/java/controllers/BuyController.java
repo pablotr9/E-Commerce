@@ -44,15 +44,6 @@ public class BuyController extends HttpServlet {
        
        int max = parseInt( (String) request.getParameter("max"));
         
-        
-            
-                
-                    /* TODO output your page here. You may use following sample code. */
-                    String username = "null";
-                    if(request.getSession(false) != null &&
-                    request.getSession().getAttribute("USER")!=null){
-                        username=(String) request.getSession().getAttribute("USER");
-                    }
                     
                     double sum=0;
                     ArrayList<Purchase> purchases = new ArrayList();
@@ -76,8 +67,32 @@ public class BuyController extends HttpServlet {
                          }
                     }
                     
-                     
-                   
+                    ArrayList<Purchase> shoppingcart = (ArrayList<Purchase>) request.getSession().getAttribute("SHOPPINGCART");
+                    if(shoppingcart != null){
+                        for(Purchase p : purchases ){
+                             
+                             boolean found = false;
+                             for(Purchase p2 : shoppingcart){
+                                 if(p2.productName.equals(p.productName)){
+                                    p2.setQuantity(String.valueOf(Integer.parseInt(p2.quantity)+Integer.parseInt(p.quantity)));
+                                    found=true;
+                                 }
+                             }
+                             if(!found){
+                                 shoppingcart.add(p);
+                             }  
+                        }
+                        request.getSession().setAttribute("SHOPPINGCART",shoppingcart);
+                        sum+= (double) request.getSession().getAttribute("sum");
+                        request.getSession().setAttribute("sum", sum );
+                    }else{                        
+                        request.getSession().setAttribute("sum", sum);
+                        request.getSession().setAttribute("SHOPPINGCART",purchases);
+                    }
+                    
+                    
+                    
+                   /*
                        try {
                            Conection.addPurchase(nameProducts, username, qttyProducts, purchases.size());
                        } catch (ClassNotFoundException ex) {
@@ -85,10 +100,10 @@ public class BuyController extends HttpServlet {
                        } catch (SQLException ex) {
                            Logger.getLogger(BuyController.class.getName()).log(Level.SEVERE, null, ex);
                        }
+                   */
                        
-                   request.setAttribute("products", purchases);
-                   request.setAttribute("sum", sum);
-                   request.getRequestDispatcher("TransactionView.jsp").forward(request, response);
+                   //request.setAttribute("products", purchases);
+                   request.getRequestDispatcher("cart.jsp").forward(request, response);
                 
             
         

@@ -1,16 +1,13 @@
-package controllers;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package controllers;
 
-import DAO.UserDAO;
 import db.Conection;
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.Thread.sleep;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -19,12 +16,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Purchase;
 
 /**
  *
  * @author Pablo
  */
-public class LoginController extends HttpServlet {
+public class ConfirmPurchase extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,36 +33,36 @@ public class LoginController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
-   
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-           
-            String username = request.getParameter("uname");
-            String password = request.getParameter("password");
-            ArrayList<String> errors = new ArrayList();
-            
-            
-            
-            /* TODO output your page here. You may use following sample code. */
-            UserDAO usr = UserDAO.getInstance();
-            if( usr.getId(username) == null ){
-                errors.add("User doesnt exist!");
-            }else if( ! usr.isPasswordCorrect(username,password)){
-                errors.add("Password is incorrect");
-            }
-            
-            if(errors.isEmpty()){
-                request.getSession().setAttribute("USER",username);                  
-                request.getRequestDispatcher("ProductController").forward(request, response);
-            }else{
-                request.setAttribute("errors", errors);
-                request.getRequestDispatcher("Login.jsp").forward(request, response);
-            }
-        } 
+       
+        ArrayList<Purchase> purchases = (ArrayList<Purchase>) request.getSession().getAttribute("SHOPPINGCART");
+        System.out.println("je");
+        if(purchases != null) {
+        String username = (String) request.getSession().getAttribute("USER");
+        ArrayList<String> nameProducts = new ArrayList();
+        ArrayList<String> qttyProducts = new ArrayList();
+        
+        for(int i=0; i<purchases.size(); i++){
+            nameProducts.add(purchases.get(i).productName);
+            qttyProducts.add(purchases.get(i).quantity);
+        }   
+        System.out.println("je");
+        
+        try {
+            Conection.addPurchase(nameProducts, username, qttyProducts, purchases.size());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(BuyController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(BuyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+         request.setAttribute("text", "Your purchase has been successful!!");
+        }
+        System.out.println("ja");
+         request.getRequestDispatcher("emptyShoppingCart").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

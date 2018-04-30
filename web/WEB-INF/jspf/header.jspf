@@ -18,14 +18,18 @@
         <nav>
          <ul>
                 
-               
-                
+                  
          <c:if test ="${sessionScope.USER!=null}" var="USER" >
+             <% String username = (String)request.getSession().getAttribute("USER");
+            if(username.equals("admin")){%>
+                <li><a href="addProduct.jsp">Add product</a></li>
+            <%}%> 
+            
                 <li><a href="Index.jsp">Home LOGGED IN</a></li>
                 <li><a href="LogoutController">Logout</a></li>
                 <li><a href="PreviousPurchasesController">History</a></li>
-                <li><a href="ProductController">View productss</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="ProductController">Buy products</a></li>
+                <li><a href="cart.jsp">ShoppingCart</a></li>
             </c:if>
          
                 

@@ -48,6 +48,22 @@
         <servlet-name>PreviousPurchasesController</servlet-name>
         <servlet-class>controllers.PreviousPurchasesController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>emptyShoppingCart</servlet-name>
+        <servlet-class>controllers.emptyShoppingCart</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ConfirmPurchase</servlet-name>
+        <servlet-class>controllers.ConfirmPurchase</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteItemShoppingCart</servlet-name>
+        <servlet-class>controllers.DeleteItemShoppingCart</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>addProduct</servlet-name>
+        <servlet-class>controllers.addProduct</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegistrationController</servlet-name>
         <url-pattern>/RegistrationController</url-pattern>
@@ -91,6 +107,22 @@
     <servlet-mapping>
         <servlet-name>PreviousPurchasesController</servlet-name>
         <url-pattern>/PreviousPurchasesController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>emptyShoppingCart</servlet-name>
+        <url-pattern>/emptyShoppingCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfirmPurchase</servlet-name>
+        <url-pattern>/ConfirmPurchase</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteItemShoppingCart</servlet-name>
+        <url-pattern>/DeleteItemShoppingCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addProduct</servlet-name>
+        <url-pattern>/addProduct</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

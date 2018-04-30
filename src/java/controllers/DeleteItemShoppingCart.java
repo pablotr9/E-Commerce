@@ -1,30 +1,24 @@
-package controllers;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package controllers;
 
-import DAO.UserDAO;
-import db.Conection;
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.Thread.sleep;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Purchase;
 
 /**
  *
  * @author Pablo
  */
-public class LoginController extends HttpServlet {
+public class DeleteItemShoppingCart extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,36 +29,43 @@ public class LoginController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
-   
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-           
-            String username = request.getParameter("uname");
-            String password = request.getParameter("password");
-            ArrayList<String> errors = new ArrayList();
-            
-            
-            
-            /* TODO output your page here. You may use following sample code. */
-            UserDAO usr = UserDAO.getInstance();
-            if( usr.getId(username) == null ){
-                errors.add("User doesnt exist!");
-            }else if( ! usr.isPasswordCorrect(username,password)){
-                errors.add("Password is incorrect");
+        ArrayList<Purchase> shoppingcart = (ArrayList<Purchase>) request.getSession().getAttribute("SHOPPINGCART");
+        ArrayList<Purchase> shoppingcart2 = new ArrayList();
+        
+       // System.out.println(request.getParameter("0"));
+       // System.out.println(shoppingcart.size());
+
+        int del=-1;
+        if(shoppingcart != null){
+            for(int i=0; i<shoppingcart.size();i++){
+                if(request.getParameter(String.valueOf(i)) == null){
+                    shoppingcart2.add(shoppingcart.get(i));
+                    del = i;
+                }
+                    
             }
+        }
+       /* if(del != -1)
+            shoppingcart.remove(del);
+        */
+       
+       if(shoppingcart2.size() == 0){
+           request.getSession().setAttribute("SHOPPINGCART",null);
+           request.getSession().setAttribute("sum", null );
+       }else{
+           request.getSession().setAttribute("SHOPPINGCART",shoppingcart2);
+           double sum = (double) request.getSession().getAttribute("sum");
+           sum -= shoppingcart.get(del).getTotal();
+           request.getSession().setAttribute("sum", sum );
+       }
             
-            if(errors.isEmpty()){
-                request.getSession().setAttribute("USER",username);                  
-                request.getRequestDispatcher("ProductController").forward(request, response);
-            }else{
-                request.setAttribute("errors", errors);
-                request.getRequestDispatcher("Login.jsp").forward(request, response);
-            }
-        } 
+      
+        
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
